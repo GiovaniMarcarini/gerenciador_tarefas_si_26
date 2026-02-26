@@ -30,6 +30,8 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
   AppBar _criarAppBar(){
     return AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      centerTitle: true,
       title: const Text('Tarefas'),
       actions: [
         IconButton(
@@ -51,6 +53,16 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
         ),
       );
     }
-    return Container();
+    return ListView.separated(
+        itemCount: _tarefas.length,
+        itemBuilder: (BuildContext context, int index){
+          final tarefa = _tarefas[index];
+          return ListTile(
+            title: Text('${tarefa.id} - ${tarefa.descricao}'),
+            subtitle: Text('Prazo: ${tarefa.prazoFormatado}'),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+    );
   }
 }
