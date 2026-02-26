@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:teste/model/tarefa.dart';
+import 'package:teste/widgets/conteudo_form_dialog.dart';
 
 class ListaTarefasPage extends StatefulWidget{
 
@@ -67,6 +68,26 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   }
 
   void _abrirForm({Tarefa? tarefaAtual, int? indice}){
-
+    final key = GlobalKey<ConteudoFormDialogState>();
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text(tarefaAtual == null ? 'Nova Tarefa' :
+            'Alterar a tarefa: ${tarefaAtual.id}'),
+            content: ConteudoFormDialog(key: key, tarefaAtual: tarefaAtual),
+            actions: [
+              TextButton(
+                  onPressed: (){},
+                  child: const Text('Cancelar')
+              ),
+              TextButton(
+                child: const Text('Salvar'),
+                onPressed: (){},
+              )
+            ],
+          );
+        }
+    );
   }
 }
