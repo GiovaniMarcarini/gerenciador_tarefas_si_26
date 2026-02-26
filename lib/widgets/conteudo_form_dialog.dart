@@ -38,14 +38,28 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
           children: [
             TextFormField(
               controller: descricaoController,
-              decoration: InputDecoration(labelText: 'Descrição'),
+              decoration: const InputDecoration(labelText: 'Descrição'),
               validator: (String? valor){
                 if (valor == null || valor.isEmpty){
                   return 'Informe a Descrição';
                 }
                 return null;
               }
-            )
+            ),
+            TextFormField(
+              controller: prazoController,
+              decoration: const InputDecoration(labelText:'Prazo',
+              prefixIcon: IconButton(
+                  onPressed: null, 
+                  icon: Icon(Icons.calendar_today)
+              ),
+                suffixIcon: IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.close)
+                ),
+              ),
+              readOnly: true,
+            ),
           ],
         )
     );
