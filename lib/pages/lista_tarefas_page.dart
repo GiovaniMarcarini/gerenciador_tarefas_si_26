@@ -35,7 +35,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       title: const Text('Tarefas'),
       actions: [
         IconButton(
-            onPressed: (){},
+            onPressed: _abrirForm,
             icon: const Icon(Icons.list),
         )
       ],
@@ -64,5 +64,9 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
     );
+  }
+
+  void _abrirForm({Tarefa? tarefaAtual, int? indice}){
+
   }
 }
