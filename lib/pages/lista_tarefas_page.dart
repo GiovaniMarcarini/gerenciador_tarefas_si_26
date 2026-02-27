@@ -22,7 +22,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       appBar: _criarAppBar(),
       body: _criarBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _abrirForm,
         tooltip: 'Nova Tarefa',
         child: const Icon(Icons.add),
       ),
@@ -36,7 +36,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       title: const Text('Tarefas'),
       actions: [
         IconButton(
-            onPressed: _abrirForm,
+            onPressed: (){},
             icon: const Icon(Icons.list),
         )
       ],
@@ -78,7 +78,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
             content: ConteudoFormDialog(key: key, tarefaAtual: tarefaAtual),
             actions: [
               TextButton(
-                  onPressed: (){},
+                  onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Cancelar')
               ),
               TextButton(

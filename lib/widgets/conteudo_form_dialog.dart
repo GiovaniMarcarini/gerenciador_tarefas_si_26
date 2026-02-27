@@ -1,5 +1,4 @@
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,13 +47,13 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
             ),
             TextFormField(
               controller: prazoController,
-              decoration: const InputDecoration(labelText:'Prazo',
+              decoration: InputDecoration(labelText:'Prazo',
               prefixIcon: IconButton(
-                  onPressed: null, 
+                  onPressed: _mostrarCalendario,
                   icon: Icon(Icons.calendar_today)
               ),
                 suffixIcon: IconButton(
-                    onPressed: null,
+                    onPressed: () => prazoController.clear(),
                     icon: Icon(Icons.close)
                 ),
               ),
@@ -64,4 +63,33 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
         )
     );
   }
+
+  void _mostrarCalendario(){
+    final dataFormatada = prazoController!.text;
+    var data = DateTime.now();
+    if (dataFormatada.isNotEmpty){
+      data = prazoFormat.parse(dataFormatada);
+    }
+    showDatePicker(
+        context: context,
+        initialDate: data,
+        firstDate: data.subtract(Duration(days: 61)),
+        lastDate: data.add(Duration(days: 61)),
+    ).then((DateTime? dataSelecionada){
+      if (dataSelecionada != null){
+        setState(() {
+          prazoController.text = prazoFormat.format(dataSelecionada);
+        });
+      }
+    });
+  }
+
+  bool dadosValidados() => formkey.currentState?.validate() == true;
+
+  Tarefa get novaTarefa => Tarefa(
+      id: widget.tarefaAtual?.id ?? 0,
+      descricao: descricaoController.text,
+      prazo: prazoController.text.isEmpty ? null :
+      prazoFormat.parse(prazoController.text)
+  );
 }
