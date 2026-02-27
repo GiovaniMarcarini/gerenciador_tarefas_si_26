@@ -16,6 +16,8 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     prazo: DateTime.now().add(const Duration(days: 5))),
   ];
 
+  var ultimoId = 0;
+
   @override
   Widget build (BuildContext context){
     return Scaffold(
@@ -83,7 +85,20 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               ),
               TextButton(
                 child: const Text('Salvar'),
-                onPressed: (){},
+                onPressed: (){
+                  if (key.currentState != null && key.currentState!.dadosValidados()){
+                    setState(() {
+                      final novaTarefa = key.currentState!.novaTarefa;
+                      if (indice == null){
+                        novaTarefa.id = ++ ultimoId;
+                        _tarefas.add(novaTarefa);
+                      }else{
+                        _tarefas[indice] = novaTarefa;
+                      }
+                    });
+                    Navigator.of(context).pop();
+                  }
+                },
               )
             ],
           );

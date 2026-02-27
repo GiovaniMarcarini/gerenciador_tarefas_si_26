@@ -24,8 +24,10 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
   @override
   void initState() {
     super.initState();
-    descricaoController.text = widget.tarefaAtual!.descricao;
-    prazoController.text =widget.tarefaAtual!.prazoFormatado;
+    if (widget.tarefaAtual != null) {
+      descricaoController.text = widget.tarefaAtual!.descricao;
+      prazoController.text = widget.tarefaAtual!.prazoFormatado;
+    }
   }
   
   @override
