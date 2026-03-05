@@ -11,10 +11,10 @@ class ListaTarefasPage extends StatefulWidget{
 
 class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
-  final _tarefas = <Tarefa>[
-    Tarefa(id: 1, descricao: 'Fazer atividade avaliativa 1',
-    prazo: DateTime.now().add(const Duration(days: 5))),
-  ];
+  static const ACAO_EDITAR = 'editar';
+  static const ACAO_DELETAR = 'deletar';
+
+  final _tarefas = <Tarefa>[];
 
   var ultimoId = 0;
 
@@ -60,12 +60,87 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
         itemCount: _tarefas.length,
         itemBuilder: (BuildContext context, int index){
           final tarefa = _tarefas[index];
-          return ListTile(
-            title: Text('${tarefa.id} - ${tarefa.descricao}'),
-            subtitle: Text('Prazo: ${tarefa.prazoFormatado}'),
+          return PopupMenuButton(
+            child: ListTile(
+              title: Text('${tarefa.id} - ${tarefa.descricao}'),
+              subtitle: Text(tarefa.prazo != null ?
+              'Prazo: ${tarefa.prazoFormatado}' :''),
+            ),
+            itemBuilder: (BuildContext context) => criarItemMenuPopUp(),
+            onSelected: (String valorSelecionado){
+              if (valorSelecionado == ACAO_EDITAR){
+                _abrirForm(tarefaAtual: tarefa, indice: index);
+              }else{
+                _excluir(index);
+              }
+            },
           );
         },
-        separatorBuilder: (BuildContext context, int index) => Divider(),
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
+  }
+
+  List<PopupMenuEntry<String>>criarItemMenuPopUp(){
+    return [
+      const PopupMenuItem<String>(
+        value: ACAO_EDITAR,
+          child: Row(
+            children: [
+              Icon(Icons.edit, color: Colors.black),
+              Padding(
+                  padding: EdgeInsets.only(left: 10),
+                child: Text('Editar'),
+              )
+            ],
+          )
+      ),
+      const PopupMenuItem<String>(
+          value: ACAO_DELETAR,
+          child: Row(
+            children: [
+              Icon(Icons.delete, color: Colors.red),
+              Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text('Excluir'),
+              )
+            ],
+          )
+      )
+    ];
+  }
+  
+  void _excluir(int index){
+    showDialog(
+        context: context, 
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.warning, color: Colors.amber),
+                Padding(
+                    padding: EdgeInsets.only(left: 10),
+                  child: Text('Atenção'),
+                )
+              ],
+            ),
+            content: const Text('Esse registro será removido definitivamente!!!'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancelar')
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _tarefas.removeAt(index);
+                    });
+                  },
+                  child: const Text('Ok')
+              )
+            ],
+          );
+        }
     );
   }
 
