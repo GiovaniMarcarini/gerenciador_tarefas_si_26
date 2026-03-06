@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:teste/model/tarefa.dart';
+import 'package:teste/pages/filtro_page.dart';
 import 'package:teste/widgets/conteudo_form_dialog.dart';
 
 class ListaTarefasPage extends StatefulWidget{
@@ -38,7 +39,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       title: const Text('Tarefas'),
       actions: [
         IconButton(
-            onPressed: (){},
+            onPressed: _abrirFiltro,
             icon: const Icon(Icons.list),
         )
       ],
@@ -136,7 +137,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
                       _tarefas.removeAt(index);
                     });
                   },
-                  child: const Text('Ok')
+                  child:const Text('Ok')
               )
             ],
           );
@@ -144,6 +145,14 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     );
   }
 
+  void _abrirFiltro(){
+    final navigator = Navigator.of(context);
+    navigator.pushNamed(FiltroPage.ROUTE_NAME).then((alterouValores){
+      if (alterouValores == true){
+
+      }
+    });
+  }
   void _abrirForm({Tarefa? tarefaAtual, int? indice}){
     final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
