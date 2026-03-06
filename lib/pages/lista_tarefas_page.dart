@@ -153,6 +153,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       }
     });
   }
+
   void _abrirForm({Tarefa? tarefaAtual, int? indice}){
     final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
