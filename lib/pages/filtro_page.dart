@@ -36,7 +36,7 @@ class _FiltroPageState extends State<FiltroPage>{
   }
 
   void _carregarSharedPreferences() async {
-    final _prefs = SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
     setState(() {
       campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ??
