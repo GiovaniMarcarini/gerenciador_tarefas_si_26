@@ -9,7 +9,7 @@ class DatabaseProvider{
 
   DatabaseProvider.int();
 
-  static final DatabaseProvider instace = DatabaseProvider.int();
+  static final DatabaseProvider instance = DatabaseProvider.int();
 
   Database? _database;
 
