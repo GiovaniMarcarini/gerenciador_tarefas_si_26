@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teste/dao/tarefa_dao.dart';
 import 'package:teste/model/tarefa.dart';
 import 'package:teste/pages/filtro_page.dart';
@@ -20,6 +21,13 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   final _dao = TarefaDao();
 
   var ultimoId = 0;
+
+  @override
+  void initState(){
+    super.initState();
+    _atualizarLista();
+  }
+
 
   @override
   Widget build (BuildContext context){
@@ -74,7 +82,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               if (valorSelecionado == ACAO_EDITAR){
                 _abrirForm(tarefaAtual: tarefa);
               }else{
-                _excluir(index);
+                _excluir(tarefa);
               }
             },
           );
@@ -112,7 +120,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     ];
   }
   
-  void _excluir(int index){
+  void _excluir(Tarefa tarefa){
     showDialog(
         context: context, 
         builder: (BuildContext context){
@@ -135,8 +143,13 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    setState(() {
-                      _tarefas.removeAt(index);
+                    if(tarefa.id == null){
+                      return;
+                    }
+                    _dao.excluir(tarefa.id!).then((sucess){
+                      if(sucess){
+                        _atualizarLista();
+                      }
                     });
                   },
                   child:const Text('Ok')
@@ -151,13 +164,22 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     final navigator = Navigator.of(context);
     navigator.pushNamed(FiltroPage.ROUTE_NAME).then((alterouValores){
       if (alterouValores == true){
-
+          _atualizarLista();
       }
     });
   }
 
   void _atualizarLista() async {
-    final tarefas = await _dao.listar();
+    final prefs = await SharedPreferences.getInstance();
+    final campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ?? Tarefa.CAMPO_ID;
+    final usarOrdemDecrescente = prefs.getBool(FiltroPage.USAR_ORDEM_DECRESCENTE) ?? true;
+    final filtroDescricao = prefs.getString(FiltroPage.CHAVE_FILTRO_DESCRICAO) ?? '';
+
+    final tarefas = await _dao.listar(
+      filtro: filtroDescricao,
+      campoOrdenacao: campoOrdenacao,
+      usarOrdemDecrescente: usarOrdemDecrescente
+    );
     setState(() {
       _tarefas.clear();
       if(tarefas.isNotEmpty){
