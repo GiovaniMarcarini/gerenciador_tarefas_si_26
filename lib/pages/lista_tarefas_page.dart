@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:teste/dao/tarefa_dao.dart';
 import 'package:teste/model/tarefa.dart';
 import 'package:teste/pages/filtro_page.dart';
 import 'package:teste/widgets/conteudo_form_dialog.dart';
@@ -16,6 +17,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   static const ACAO_DELETAR = 'deletar';
 
   final _tarefas = <Tarefa>[];
+  final _dao = TarefaDao();
 
   var ultimoId = 0;
 
@@ -70,7 +72,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
             itemBuilder: (BuildContext context) => criarItemMenuPopUp(),
             onSelected: (String valorSelecionado){
               if (valorSelecionado == ACAO_EDITAR){
-                _abrirForm(tarefaAtual: tarefa, indice: index);
+                _abrirForm(tarefaAtual: tarefa);
               }else{
                 _excluir(index);
               }
@@ -154,7 +156,17 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     });
   }
 
-  void _abrirForm({Tarefa? tarefaAtual, int? indice}){
+  void _atualizarLista() async {
+    final tarefas = await _dao.listar();
+    setState(() {
+      _tarefas.clear();
+      if(tarefas.isNotEmpty){
+        _tarefas.addAll(tarefas);
+      }
+    });
+  }
+
+  void _abrirForm({Tarefa? tarefaAtual}){
     final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
         context: context,
@@ -174,12 +186,11 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
                   if (key.currentState != null && key.currentState!.dadosValidados()){
                     setState(() {
                       final novaTarefa = key.currentState!.novaTarefa;
-                      if (indice == null){
-                        novaTarefa.id = ++ ultimoId;
-                        _tarefas.add(novaTarefa);
-                      }else{
-                        _tarefas[indice] = novaTarefa;
-                      }
+                      _dao.salvar(novaTarefa).then((sucess){
+                        if(sucess){
+                          _atualizarLista();
+                        }
+                      });
                     });
                     Navigator.of(context).pop();
                   }
