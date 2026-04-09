@@ -1,4 +1,7 @@
 
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teste/dao/tarefa_dao.dart';
@@ -19,6 +22,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
   final _tarefas = <Tarefa>[];
   final _dao = TarefaDao();
+  var _carregando = false;
 
   var ultimoId = 0;
 
@@ -57,6 +61,30 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   }
 
   Widget _criarBody(){
+    if (_carregando){
+      return const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.center,
+            child: CircularProgressIndicator(),
+          ),
+          Align(
+            alignment: AlignmentDirectional.center,
+            child: Padding(
+                padding: EdgeInsets.only(top: 10),
+              child: Text('Carregando suas Tarefas',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              ),
+            ),
+          )
+        ],
+      );
+    }
     if(_tarefas.isEmpty){
       return const Center(
         child: Text('Nenhuma tarefa encontrada!!!',
@@ -170,6 +198,9 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   }
 
   void _atualizarLista() async {
+    setState(() {
+      _carregando = true;
+    });
     final prefs = await SharedPreferences.getInstance();
     final campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ?? Tarefa.CAMPO_ID;
     final usarOrdemDecrescente = prefs.getBool(FiltroPage.USAR_ORDEM_DECRESCENTE) ?? true;
@@ -185,6 +216,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       if(tarefas.isNotEmpty){
         _tarefas.addAll(tarefas);
       }
+      _carregando = false;
     });
   }
 
