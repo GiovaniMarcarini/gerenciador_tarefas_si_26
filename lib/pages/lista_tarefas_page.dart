@@ -101,7 +101,21 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
           final tarefa = _tarefas[index];
           return PopupMenuButton(
             child: ListTile(
-              title: Text('${tarefa.id} - ${tarefa.descricao}'),
+              leading: Checkbox(
+                value: tarefa.finalizada,
+                onChanged: (bool? checked){
+                  setState(() {
+                    tarefa.finalizada = checked == true;
+                  });
+                  _dao.salvar(tarefa);
+                },
+              ),
+              title: Text('${tarefa.id} - ${tarefa.descricao}',
+              style: TextStyle(
+                decoration: tarefa.finalizada ? TextDecoration.lineThrough : null,
+                color: tarefa.finalizada ? Colors.grey : null,
+              ),
+              ),
               subtitle: Text(tarefa.prazo != null ?
               'Prazo: ${tarefa.prazoFormatado}' :''),
             ),
